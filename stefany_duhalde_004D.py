@@ -97,9 +97,7 @@ def actualizar_precio(codigo, nuevo_precio):
     
 #OPCION 4:
 def validador_codigo(codigo):
-    "True si código no está vacío o solo con espacios en blanco, False si no cumple con validación o código ya está registrado."
-    if codigo in recorridos or codigo in venta:
-        return False
+    "True si código no está vacío o solo con espacios en blanco, False si no cumple con validación."
     return len(codigo.strip()) > 0
 
 def validador_origen(origen):
@@ -122,16 +120,16 @@ def validador_tipo_bus(tipo_bus):
     "True si tipo de bus es 'normal', 'semi-cama' o 'cama', False si no cumple con validación."
     return tipo_bus == 'normal' or tipo_bus == 'semi-cama' or tipo_bus == 'cama'
 
-def validador_servicio(servicio)
+def validador_servicio(servicio):
     "True si servicio es 'dia' o 'noche', False si no cumple con validación."
     return servicio == 'dia' or servicio == 'noche' 
 
-def validador_tiene_wifi(tiene_wifi) -> True | False | None:
-    'True si es "s", False si es "n". "None" si no es ni s ni n'
+def validador_tiene_wifi(tiene_wifi:str) -> True | False :
+    'True si es "s", False si es "n"'
     if tiene_wifi == 's':
         return True
     elif tiene_wifi == 'n':
-        return False
+        return False 
     
 def validador_precio(precio):
     "True si precio es entero mayor que 0, False si no cunmple alguna de las condiciones"
@@ -149,8 +147,24 @@ def validador_asientos(asientos):
     except:
         return False
 
+def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, tiene_wifi, precio, asientos):
+    "False si el código ya se encontraba registrado, True si se logra agregar"
+    if codigo in recorridos or codigo in venta:
+        return False
+    recorridos[codigo] = [origen, destino, distancia, tipo_bus, servicio, tiene_wifi]
+    venta[codigo] = [precio, asientos]
+    return True
+    
+#OPCION 5:
 
-
+def eliminar_codigo(codigo):
+    "True si elimina el código de los diccionarios, False si el código no existe."
+    if codigo in recorridos:
+        del recorridos[codigo]
+        if codigo in venta:
+            del venta[codigo]
+        return True
+    return False
     
 while True:
     menu()
@@ -184,28 +198,29 @@ while True:
                 print('ERROR: Precio maximo debe ser un número entero.')
         
         busqueda_precio()
-
+    #VER SI ESTÁ BIEN LA OP 3
     elif opcion == 3:
         while True:
-            codigo_a_modificar = validador_string('Ingrese Código a modificar: ').capitalize()
+            codigo_a_modificar = validador_string('Ingrese Código a modificar: ').upper()
             precio_nuevo = validador_entero_positivo('Ingrese nuevo precio: ')
 
             if actualizar_precio(codigo_a_modificar, precio_nuevo) == False:
                 print('El código no existe')
             else:
                 print('Precio actualizado')
-
-            respuesta = validador_string('¿Desea actualizar otro precio (s/n): ?')
-            if respuesta == 'n':
-                break
-            elif respuesta != 's' and respuesta != 'n':
-                print('Respuesta debe ser "n", "N", "s" o "S".')
+                
+            while True:
+                respuesta = validador_string('¿Desea actualizar otro precio (s/n): ?')
+                if respuesta == 'n':
+                    break
+                elif respuesta != 's' and respuesta != 'n':
+                    print('Respuesta debe ser "n", "N", "s" o "S".')
 
     elif opcion == 4:
         while True:
             codigo = input('Ingrese código: ').strip()
             if validador_codigo == False:
-                print('Código inválido: no debe estar vacío ni contener solo espacios en blanco, ni debe repetirse.')
+                print('Código inválido: no debe estar vacío ni contener solo espacios en blanco.')
             else:
                 break
         
@@ -232,30 +247,58 @@ while True:
                 break
         
         while True:
-            tipo_bus = input('Ingrese tipo de bus: ').lower().strip()
+            tipo_bus = input('Ingrese tipo de bus [normal, semi-cama o cama]: ').lower().strip()
             if validador_tipo_bus == False:
                 print('Tipo de bus inválido: tipo de bus debe ser: normal, semi-cama o cama.')
             else:
                 break
         
         while True:
-            tipo_bus = input('Ingrese tipo de bus: ').lower().strip()
-            if validador_tipo_bus == False:
-                print('Tipo de bus inválido: tipo de bus debe ser: normal, semi-cama o cama.')
+            servicio = input('Ingrese servicio [dia o noche]: ').lower().strip()
+            if validador_servicio == False:
+                print('Servicio inválido: servicio debe ser: dia o noche, sin tildes.')
             else:
                 break
 
         while True:
-            codigo = input('Ingrese código: ')
-            if validador_codigo == False:
+            while True:
+                tiene_wifi = input('Ingrese si tiene wifi [s/n]: ').lower().strip()
+                if tiene_wifi != 's' and tiene_wifi != 'n':
+                    print('Respuesta debe ser s, S, n o N.')
+                else:
+                    break
+            if validador_tiene_wifi == False:
                 print('Código inválido: no debe estar vacío ni contener solo espacios en blanco.')
             else:
                 break
         
-
-
+        while True:
+            precio = input('Ingrese precio en pesos: ')
+            if validador_precio == False:
+                print('Precio inválido: Debe ser un entero mayor que 0.')
+            else:
+                precio = int(precio)
+                break
+        
+        while True:
+            asientos = input('Ingrese asientos disponibles: ')
+            if validador_asientos == False:
+                print('Asientos disponibles inválido: Debe ser un entero mayor o igual que 0.')
+            else:
+                asientos = int(asientos)
+                break
+        
+        if agregar_recorrido(codigo, origen, destino, distancia_km, tipo_bus, servicio, tiene_wifi, precio, asientos) == False:
+            print('El código ya existe')
+        else:
+            print('Recorrido agregado')
 
     elif opcion == 5:
-
+        codigo_a_eliminar = validador_string('Ingrese Código a modificar: ').upper()
+        if eliminar_codigo(codigo_a_eliminar) == False:
+            print('El código no existe')
+        else:
+            print("Recorrido eliminado")
     elif opcion == 6:
+        print('Programa finalizado.')
         break
