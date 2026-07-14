@@ -60,23 +60,23 @@ def validador_entero_positivo(mensaje):
         except:
             print('ERROR:VALOR DEBE SER UN NÚMERO ENTERO.')      
 
-# OPCION 1:
+# OPCION 1: --> dicc en argumento
 
-def asientos_origen(origen):
+def asientos_origen(origen, dicc_recorrido):
     asientos_disponibles = 0
-    for codigo, detalles_recorrido in recorridos.items():
+    for codigo, detalles_recorrido in dicc_recorrido.items():
         if detalles_recorrido[0].capitalize() == ciudad_origen:
             asientos_disponibles += venta[codigo][1]
-    print(f'Asientos disponibles: {asientos_disponibles}')
+    print(f'El total de asientos disponible es: {asientos_disponibles}')
 
-# OPCION 2:
+# OPCION 2: --> poner dicc en argumento
 
-def busqueda_precio(p_min, p_max):
+def busqueda_precio(p_min, p_max, dicc_recorrido):
     lista_por_rango_de_precio = []
     for codigo, detalles_venta in venta.items():
         if (p_min <= detalles_venta[0] <= p_max) and (detalles_venta[1] != 0):
-            origen = recorridos[codigo][0]
-            destino = recorridos[codigo][1]
+            origen = dicc_recorrido[codigo][0]
+            destino = dicc_recorrido[codigo][1]
             lista_por_rango_de_precio.append(f'{origen}-{destino}--{codigo}')
     
     if len(lista_por_rango_de_precio) == 0:
@@ -145,10 +145,10 @@ def validador_asientos(asientos):
         return valor >= 0
     except:
         return False
-
-def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, tiene_wifi, precio, asientos):
+#--> agregar dicc recorrido
+def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, tiene_wifi, precio, asientos, dicc_recorridos):
     "False si el código ya se encontraba registrado, True si se logra agregar"
-    if codigo in recorridos or codigo in venta:
+    if codigo in dicc_recorridos or codigo in venta:
         return False
     
     if tiene_wifi == 'n':
@@ -156,16 +156,16 @@ def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, ti
     elif tiene_wifi == 's':
         tiene_wifi = True
     
-    recorridos[codigo] = [origen, destino, distancia, tipo_bus, servicio, tiene_wifi]
+    dicc_recorridos[codigo] = [origen, destino, distancia, tipo_bus, servicio, tiene_wifi]
     venta[codigo] = [precio, asientos]
     return True
     
-#OPCION 5:
+#OPCION 5: --> poner diccionario reco
 
-def eliminar_codigo(codigo):
+def eliminar_codigo(codigo, dicc_recorridos):
     "True si elimina el código de los diccionarios, False si el código no existe."
-    if codigo in recorridos:
-        del recorridos[codigo]
+    if codigo in dicc_recorridos:
+        del dicc_recorridos[codigo]
         if codigo in venta:
             del venta[codigo]
         return True
@@ -177,11 +177,11 @@ while True:
 
     if opcion == 1:
         ciudad_origen = validador_string('Ingrese ciudad de origen: ').capitalize()
-        asientos_origen(ciudad_origen)
+        asientos_origen(ciudad_origen, recorridos)
     
     #VERIFICAR LA VALIDACIÓN DE LOS PRECIOS MIN/MAXIMO
     elif opcion == 2:
-        while True:
+        """    while True:
             try:
                 precio_minimo = int(input('Ingrese precio mínimo: '))
                 if precio_minimo < 0 :
@@ -200,10 +200,29 @@ while True:
                 else:
                     break
             except:
+                print('Debe ingresar valores enteros.')"""
+
+        while True:
+            try:
+                precio_minimo = int(input('Ingrese precio mínimo: '))
+                precio_maximo = int(input('Ingrese precio maximo: '))
+                if precio_minimo < 0 :
+                    print('Precio mínimo debe ser mayor o igual a 0.')
+                    continue
+                if precio_maximo < 0 :
+                    print('Precio maximo debe ser mayor o igual a 0.')
+                    continue
+                if precio_maximo < precio_minimo:
+                    print('Precio máximo debe ser mayor o igual a precio mínimo.')
+                else:
+                    break
+            except:
                 print('Debe ingresar valores enteros.')
+                
+                
         
-        busqueda_precio(precio_minimo, precio_maximo) #no está mostrando R002 CUANDO MODIFICO PRECIO EN OPC 2
-    #VER SI ESTÁ BIEN LA OP 3 
+        busqueda_precio(precio_minimo, precio_maximo, recorridos)
+    
     elif opcion == 3:
         while True:
             codigo_a_modificar = validador_string('Ingrese Código a modificar: ').upper()
@@ -291,14 +310,14 @@ while True:
                 asientos = int(asientos)
                 break
         
-        if agregar_recorrido(codigo, origen, destino, distancia_km, tipo_bus, servicio, tiene_wifi, precio, asientos) == False:
+        if agregar_recorrido(codigo, origen, destino, distancia_km, tipo_bus, servicio, tiene_wifi, precio, asientos, recorridos) == False:
             print('El código ya existe')
         else:
             print('Recorrido agregado')
 
     elif opcion == 5:
         codigo_a_eliminar = validador_string('Ingrese Código a modificar: ').upper()
-        if eliminar_codigo(codigo_a_eliminar) == False:
+        if eliminar_codigo(codigo_a_eliminar, recorridos) == False:
             print('El código no existe')
         else:
             print("Recorrido eliminado")
