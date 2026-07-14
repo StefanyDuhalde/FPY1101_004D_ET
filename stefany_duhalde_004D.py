@@ -26,7 +26,8 @@ def menu():
 5. Eliminar recorrido
 6. Salir
 =====================================""")
-
+    
+# --> VERIFICAR SI EN LA PARTE DE ERROR DEBO ESCRIBIR LO MISMP Q EN EL PRITN
 def leer_opcion():
     while True:
         try:
@@ -38,6 +39,223 @@ def leer_opcion():
         except:
             print('ERROR: opción debe ser un número entero.')
 
+def validador_string(mensaje):
+    "Sirve para validar origen y destino. Devuelve string en minúscula"
+    while True:
+        valor = input(mensaje).strip().lower()
+        if len(valor) == 0:
+            print('Valor no puede estar vacío ni contener solo espacios en blanco')
+        else:
+            return valor
 
+def validador_entero_positivo(mensaje):
+    'Sirve para validar distancia_km o precio. Devuelve valor entero positivo.'
+    while True:
+        try:
+            valor = int(input(mensaje))
+            if valor <= 0:
+                print('Valor debe ser mayor que cero.')  
+            else:
+                return valor
+        except:
+            print('ERROR:VALOR DEBE SER UN NÚMERO ENTERO.')      
+
+# OPCION 1:
+
+def asientos_origen(origen):
+    asientos_disponibles = 0
+    for codigo, detalles_recorrido in recorridos.items():
+        if detalles_recorrido[0].capitalize() == ciudad_origen:
+            asientos_disponibles += venta[codigo][1]
+    print(f'Asientos disponibles: {asientos_disponibles}')
+
+# OPCION 2:
+
+def busqueda_precio(p_min, p_max):
+    lista_por_rango_de_precio = []
+    for codigo, detalles_venta in venta.itmes():
+        if (p_min <= detalles_venta[0] <= p_max) and (detalles_venta[1] != 0):
+            origen = recorridos[codigo][0]
+            destino = recorridos[codigo][1]
+            diccionario = {'Origen': origen, 'Destino': destino, 'Código': codigo }
+            lista_por_rango_de_precio.append(diccionario)
+    
+    if len(lista_por_rango_de_precio) == 0:
+        print("No hay recorridos en ese rango de precios.")
+    else:
+        print((lista_por_rango_de_precio).sort())
+
+# OPCIÓN 3:
+
+def actualizar_precio(codigo, nuevo_precio):
+    "Devuelve True si se pudo actulizar precio, False si no existe el código"
+    if codigo in venta:
+        venta[codigo][0] = nuevo_precio
+        return True
+    else:
+        return False
+    
+#OPCION 4:
+def validador_codigo(codigo):
+    "True si código no está vacío o solo con espacios en blanco, False si no cumple con validación o código ya está registrado."
+    if codigo in recorridos or codigo in venta:
+        return False
+    return len(codigo.strip()) > 0
+
+def validador_origen(origen):
+    "True si origen no está vacío o solo con espacios en blanco, False si no cumple con validación."
+    return len(origen.strip()) > 0
+
+def validador_destino(destino):
+    "True si destino no está vacío o solo con espacios en blanco, False si no cumple con validación."
+    return len(destino.strip()) > 0
+
+def validador_distancia_km(distancia_km):
+    "True si distancia es entero mayor que 0, False si no cunmple alguna de las condiciones"
+    try:
+        valor = int(distancia_km)
+        return valor > 0
+    except:
+        return False
+
+def validador_tipo_bus(tipo_bus):
+    "True si tipo de bus es 'normal', 'semi-cama' o 'cama', False si no cumple con validación."
+    return tipo_bus == 'normal' or tipo_bus == 'semi-cama' or tipo_bus == 'cama'
+
+def validador_servicio(servicio)
+    "True si servicio es 'dia' o 'noche', False si no cumple con validación."
+    return servicio == 'dia' or servicio == 'noche' 
+
+def validador_tiene_wifi(tiene_wifi) -> True | False | None:
+    'True si es "s", False si es "n". "None" si no es ni s ni n'
+    if tiene_wifi == 's':
+        return True
+    elif tiene_wifi == 'n':
+        return False
+    
+def validador_precio(precio):
+    "True si precio es entero mayor que 0, False si no cunmple alguna de las condiciones"
+    try:
+        valor = int(precio)
+        return valor > 0
+    except:
+        return False
+
+def validador_asientos(asientos):
+    "True si asientos es entero mayor o igual que 0, False si no cunmple alguna de las condiciones"
+    try:
+        valor = int(asientos)
+        return valor >= 0
+    except:
+        return False
+
+
+
+    
 while True:
     menu()
+    opcion = leer_opcion()
+
+    if opcion == 1:
+        ciudad_origen = validador_string('Ingrese ciudad de origen: ').capitalize()
+        asientos_origen(ciudad_origen)
+    
+    #VERIFICAR LA VALIDACIÓN DE LOS PRECIOS MIN/MAXIMO
+    elif opcion == 2:
+        while True:
+            try:
+                precio_minimo = int(input('Ingrese precio mínimo: '))
+                if precio_minimo < 0 :
+                    print('Precio mínimo debe ser mayor o igual a 0.')
+                else:
+                    break
+            except:
+                print('ERROR: Precio mínimo debe ser un número entero.')
+        while True:
+            try:
+                precio_maximo = int(input('Ingrese precio maximo: '))
+                if precio_maximo < 0 :
+                    print('Precio maximo debe ser mayor o igual a 0.')
+                elif precio_maximo < precio_minimo:
+                    print('Precio máximo debe ser mayor o igual a precio mínimo.')
+                else:
+                    break
+            except:
+                print('ERROR: Precio maximo debe ser un número entero.')
+        
+        busqueda_precio()
+
+    elif opcion == 3:
+        while True:
+            codigo_a_modificar = validador_string('Ingrese Código a modificar: ').capitalize()
+            precio_nuevo = validador_entero_positivo('Ingrese nuevo precio: ')
+
+            if actualizar_precio(codigo_a_modificar, precio_nuevo) == False:
+                print('El código no existe')
+            else:
+                print('Precio actualizado')
+
+            respuesta = validador_string('¿Desea actualizar otro precio (s/n): ?')
+            if respuesta == 'n':
+                break
+            elif respuesta != 's' and respuesta != 'n':
+                print('Respuesta debe ser "n", "N", "s" o "S".')
+
+    elif opcion == 4:
+        while True:
+            codigo = input('Ingrese código: ').strip()
+            if validador_codigo == False:
+                print('Código inválido: no debe estar vacío ni contener solo espacios en blanco, ni debe repetirse.')
+            else:
+                break
+        
+        while True:
+            origen = input('Ingrese origen: ').strip().capitalize()
+            if validador_origen == False:
+                print('Origen inválido: no debe estar vacío ni contener solo espacios en blanco.')
+            else:
+                break
+
+        while True:
+            destino = input('Ingrese destino: ').strip().capitalize()
+            if validador_destino == False:
+                print('Destino inválido: no debe estar vacío ni contener solo espacios en blanco.')
+            else:
+                break
+        
+        while True:
+            distancia_km = input('Ingrese distancia en km: ')
+            if validador_distancia_km == False:
+                print('Distancia inválida: Debe ser un entero mayor que 0.')
+            else:
+                distancia_km = int(distancia_km)
+                break
+        
+        while True:
+            tipo_bus = input('Ingrese tipo de bus: ').lower().strip()
+            if validador_tipo_bus == False:
+                print('Tipo de bus inválido: tipo de bus debe ser: normal, semi-cama o cama.')
+            else:
+                break
+        
+        while True:
+            tipo_bus = input('Ingrese tipo de bus: ').lower().strip()
+            if validador_tipo_bus == False:
+                print('Tipo de bus inválido: tipo de bus debe ser: normal, semi-cama o cama.')
+            else:
+                break
+
+        while True:
+            codigo = input('Ingrese código: ')
+            if validador_codigo == False:
+                print('Código inválido: no debe estar vacío ni contener solo espacios en blanco.')
+            else:
+                break
+        
+
+
+
+    elif opcion == 5:
+
+    elif opcion == 6:
+        break
