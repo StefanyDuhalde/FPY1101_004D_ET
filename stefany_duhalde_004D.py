@@ -71,7 +71,7 @@ def asientos_origen(origen, dicc_recorrido):
 
 # OPCION 2: --> poner dicc en argumento
 
-def busqueda_precio(p_min, p_max, dicc_recorrido):
+def busqueda_precio(p_min, p_max, dicc_recorrido, venta):
     lista_por_rango_de_precio = []
     for codigo, detalles_venta in venta.items():
         if (p_min <= detalles_venta[0] <= p_max) and (detalles_venta[1] != 0):
@@ -86,7 +86,7 @@ def busqueda_precio(p_min, p_max, dicc_recorrido):
 
 # OPCIÓN 3:
 
-def actualizar_precio(codigo, nuevo_precio):
+def actualizar_precio(codigo, nuevo_precio, venta):
     "Devuelve True si se pudo actulizar precio, False si no existe el código"
     if codigo in venta:
         venta[codigo][0] = nuevo_precio
@@ -146,7 +146,7 @@ def validador_asientos(asientos):
     except:
         return False
 #--> agregar dicc recorrido
-def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, tiene_wifi, precio, asientos, dicc_recorridos):
+def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, tiene_wifi, precio, asientos, dicc_recorridos, venta):
     "False si el código ya se encontraba registrado, True si se logra agregar"
     if codigo in dicc_recorridos or codigo in venta:
         return False
@@ -162,7 +162,7 @@ def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, ti
     
 #OPCION 5: --> poner diccionario reco
 
-def eliminar_codigo(codigo, dicc_recorridos):
+def eliminar_codigo(codigo, dicc_recorridos, venta):
     "True si elimina el código de los diccionarios, False si el código no existe."
     if codigo in dicc_recorridos:
         del dicc_recorridos[codigo]
@@ -221,14 +221,14 @@ while True:
                 
                 
         
-        busqueda_precio(precio_minimo, precio_maximo, recorridos)
+        busqueda_precio(precio_minimo, precio_maximo, recorridos, venta)
     
     elif opcion == 3:
         while True:
             codigo_a_modificar = validador_string('Ingrese Código a modificar: ').upper()
             precio_nuevo = validador_entero_positivo('Ingrese nuevo precio: ')
 
-            if actualizar_precio(codigo_a_modificar, precio_nuevo) == False:
+            if actualizar_precio(codigo_a_modificar, precio_nuevo, venta) == False:
                 print('El código no existe')
             else:
                 print('Precio actualizado')
@@ -310,14 +310,14 @@ while True:
                 asientos = int(asientos)
                 break
         
-        if agregar_recorrido(codigo, origen, destino, distancia_km, tipo_bus, servicio, tiene_wifi, precio, asientos, recorridos) == False:
+        if agregar_recorrido(codigo, origen, destino, distancia_km, tipo_bus, servicio, tiene_wifi, precio, asientos, recorridos, venta) == False:
             print('El código ya existe')
         else:
             print('Recorrido agregado')
 
     elif opcion == 5:
         codigo_a_eliminar = validador_string('Ingrese Código a modificar: ').upper()
-        if eliminar_codigo(codigo_a_eliminar, recorridos) == False:
+        if eliminar_codigo(codigo_a_eliminar, recorridos, venta) == False:
             print('El código no existe')
         else:
             print("Recorrido eliminado")
