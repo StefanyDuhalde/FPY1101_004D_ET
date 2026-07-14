@@ -82,7 +82,7 @@ def busqueda_precio(p_min, p_max):
     if len(lista_por_rango_de_precio) == 0:
         print("No hay recorridos en ese rango de precios.")
     else:
-        return print(sorted(lista_por_rango_de_precio))
+        print(sorted(lista_por_rango_de_precio))
 
 # OPCIÓN 3:
 
@@ -124,10 +124,10 @@ def validador_servicio(servicio):
     return servicio == 'dia' or servicio == 'noche' 
 
 def validador_tiene_wifi(tiene_wifi:str) -> True | False :
-    'True si es "s", False si es "n"'
-    if tiene_wifi == 's':
+    'True si es "s" o "n"'
+    if tiene_wifi == 's' or tiene_wifi == 'n':
         return True
-    elif tiene_wifi == 'n':
+    else:
         return False 
     
 def validador_precio(precio):
@@ -150,6 +150,12 @@ def agregar_recorrido(codigo, origen, destino, distancia, tipo_bus, servicio, ti
     "False si el código ya se encontraba registrado, True si se logra agregar"
     if codigo in recorridos or codigo in venta:
         return False
+    
+    if tiene_wifi == 'n':
+        tiene_wifi = False
+    elif tiene_wifi == 's':
+        tiene_wifi = True
+    
     recorridos[codigo] = [origen, destino, distancia, tipo_bus, servicio, tiene_wifi]
     venta[codigo] = [precio, asientos]
     return True
@@ -209,7 +215,7 @@ while True:
                 print('Precio actualizado')
 
             while True:
-                respuesta = validador_string('¿Desea actualizar otro precio (s/n): ?')
+                respuesta = validador_string('¿Desea actualizar otro precio (s/n)?: ')
                 if respuesta == 'n' or respuesta == 's':
                     break
                 elif respuesta != 's' and respuesta != 'n':
@@ -241,7 +247,7 @@ while True:
                 break
         
         while True:
-            distancia_km = input('Ingrese distancia en km: ')
+            distancia_km = input('Ingrese distancia en km: ').strip()
             if validador_distancia_km(distancia_km) == False:
                 print('Distancia inválida: Debe ser un entero mayor que 0.')
             else:
@@ -263,19 +269,14 @@ while True:
                 break
 
         while True:
-            while True:
-                tiene_wifi = input('Ingrese si tiene wifi [s/n]: ').lower().strip()
-                if tiene_wifi != 's' and tiene_wifi != 'n':
-                    print('Respuesta debe ser s, S, n o N.')
-                else:
+                tiene_wifi = input('Ingrese si tiene wifi (s/n): ').lower().strip()
+                if validador_tiene_wifi(tiene_wifi) == False:
+                    print('ERROR: Respuesta debe ser s, S, n o N.')
+                elif validador_tiene_wifi(tiene_wifi) == True:
                     break
-            if validador_tiene_wifi(tiene_wifi) == False:
-                print('Código inválido: no debe estar vacío ni contener solo espacios en blanco.')
-            else:
-                break
         
         while True:
-            precio = input('Ingrese precio en pesos: ')
+            precio = input('Ingrese precio en pesos: ').strip()
             if validador_precio(precio) == False:
                 print('Precio inválido: Debe ser un entero mayor que 0.')
             else:
@@ -283,7 +284,7 @@ while True:
                 break
         
         while True:
-            asientos = input('Ingrese asientos disponibles: ')
+            asientos = input('Ingrese asientos disponibles: ').strip()
             if validador_asientos(asientos) == False:
                 print('Asientos disponibles inválido: Debe ser un entero mayor o igual que 0.')
             else:
