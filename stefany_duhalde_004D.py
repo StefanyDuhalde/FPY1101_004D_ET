@@ -73,17 +73,16 @@ def asientos_origen(origen):
 
 def busqueda_precio(p_min, p_max):
     lista_por_rango_de_precio = []
-    for codigo, detalles_venta in venta.itmes():
+    for codigo, detalles_venta in venta.items():
         if (p_min <= detalles_venta[0] <= p_max) and (detalles_venta[1] != 0):
             origen = recorridos[codigo][0]
             destino = recorridos[codigo][1]
-            diccionario = {'Origen': origen, 'Destino': destino, 'Código': codigo }
-            lista_por_rango_de_precio.append(diccionario)
+            lista_por_rango_de_precio.append(f'{origen}-{destino}--{codigo}')
     
     if len(lista_por_rango_de_precio) == 0:
         print("No hay recorridos en ese rango de precios.")
     else:
-        print((lista_por_rango_de_precio).sort())
+        return print(sorted(lista_por_rango_de_precio))
 
 # OPCIÓN 3:
 
@@ -184,7 +183,7 @@ while True:
                 else:
                     break
             except:
-                print('ERROR: Precio mínimo debe ser un número entero.')
+                print('Debe ingresar valores enteros.')
         while True:
             try:
                 precio_maximo = int(input('Ingrese precio maximo: '))
@@ -195,9 +194,9 @@ while True:
                 else:
                     break
             except:
-                print('ERROR: Precio maximo debe ser un número entero.')
+                print('Debe ingresar valores enteros.')
         
-        busqueda_precio()
+        busqueda_precio(precio_minimo, precio_maximo)
     #VER SI ESTÁ BIEN LA OP 3
     elif opcion == 3:
         while True:
@@ -208,13 +207,16 @@ while True:
                 print('El código no existe')
             else:
                 print('Precio actualizado')
-                
+
             while True:
                 respuesta = validador_string('¿Desea actualizar otro precio (s/n): ?')
-                if respuesta == 'n':
+                if respuesta == 'n' or respuesta == 's':
                     break
                 elif respuesta != 's' and respuesta != 'n':
                     print('Respuesta debe ser "n", "N", "s" o "S".')
+            if respuesta == 'n':
+                break    
+            
 
     elif opcion == 4:
         while True:
