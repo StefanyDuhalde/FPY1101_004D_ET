@@ -62,7 +62,7 @@ def validador_entero_positivo(mensaje):
 
 # OPCION 1: --> dicc en argumento
 
-def asientos_origen(origen, dicc_recorrido):
+def asientos_origen(origen, dicc_recorrido, venta):
     asientos_disponibles = 0
     for codigo, detalles_recorrido in dicc_recorrido.items():
         if detalles_recorrido[0].capitalize() == ciudad_origen:
@@ -177,7 +177,7 @@ while True:
 
     if opcion == 1:
         ciudad_origen = validador_string('Ingrese ciudad de origen: ').capitalize()
-        asientos_origen(ciudad_origen, recorridos)
+        asientos_origen(ciudad_origen, recorridos,venta)
     
     #VERIFICAR LA VALIDACIÓN DE LOS PRECIOS MIN/MAXIMO
     elif opcion == 2:
