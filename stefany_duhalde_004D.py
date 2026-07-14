@@ -196,8 +196,8 @@ while True:
             except:
                 print('Debe ingresar valores enteros.')
         
-        busqueda_precio(precio_minimo, precio_maximo)
-    #VER SI ESTÁ BIEN LA OP 3
+        busqueda_precio(precio_minimo, precio_maximo) #no está mostrando R002 CUANDO MODIFICO PRECIO EN OPC 2
+    #VER SI ESTÁ BIEN LA OP 3 
     elif opcion == 3:
         while True:
             codigo_a_modificar = validador_string('Ingrese Código a modificar: ').upper()
@@ -220,29 +220,29 @@ while True:
 
     elif opcion == 4:
         while True:
-            codigo = input('Ingrese código: ').strip()
-            if validador_codigo == False:
+            codigo = input('Ingrese código: ').strip().upper()
+            if validador_codigo(codigo) == False:
                 print('Código inválido: no debe estar vacío ni contener solo espacios en blanco.')
             else:
                 break
         
         while True:
             origen = input('Ingrese origen: ').strip().capitalize()
-            if validador_origen == False:
+            if validador_origen(origen) == False:
                 print('Origen inválido: no debe estar vacío ni contener solo espacios en blanco.')
             else:
                 break
 
         while True:
             destino = input('Ingrese destino: ').strip().capitalize()
-            if validador_destino == False:
+            if validador_destino(destino) == False:
                 print('Destino inválido: no debe estar vacío ni contener solo espacios en blanco.')
             else:
                 break
         
         while True:
             distancia_km = input('Ingrese distancia en km: ')
-            if validador_distancia_km == False:
+            if validador_distancia_km(distancia_km) == False:
                 print('Distancia inválida: Debe ser un entero mayor que 0.')
             else:
                 distancia_km = int(distancia_km)
@@ -250,14 +250,14 @@ while True:
         
         while True:
             tipo_bus = input('Ingrese tipo de bus [normal, semi-cama o cama]: ').lower().strip()
-            if validador_tipo_bus == False:
+            if validador_tipo_bus(tipo_bus) == False:
                 print('Tipo de bus inválido: tipo de bus debe ser: normal, semi-cama o cama.')
             else:
                 break
         
         while True:
             servicio = input('Ingrese servicio [dia o noche]: ').lower().strip()
-            if validador_servicio == False:
+            if validador_servicio(servicio) == False:
                 print('Servicio inválido: servicio debe ser: dia o noche, sin tildes.')
             else:
                 break
@@ -269,14 +269,14 @@ while True:
                     print('Respuesta debe ser s, S, n o N.')
                 else:
                     break
-            if validador_tiene_wifi == False:
+            if validador_tiene_wifi(tiene_wifi) == False:
                 print('Código inválido: no debe estar vacío ni contener solo espacios en blanco.')
             else:
                 break
         
         while True:
             precio = input('Ingrese precio en pesos: ')
-            if validador_precio == False:
+            if validador_precio(precio) == False:
                 print('Precio inválido: Debe ser un entero mayor que 0.')
             else:
                 precio = int(precio)
@@ -284,7 +284,7 @@ while True:
         
         while True:
             asientos = input('Ingrese asientos disponibles: ')
-            if validador_asientos == False:
+            if validador_asientos(asientos) == False:
                 print('Asientos disponibles inválido: Debe ser un entero mayor o igual que 0.')
             else:
                 asientos = int(asientos)
